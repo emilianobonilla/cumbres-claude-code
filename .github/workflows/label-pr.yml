@@ -1,0 +1,74 @@
+name: Label PR
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  label:
+    name: Auto-label by branch
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Apply label based on branch prefix
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = context.payload.pull_request.head.ref;
+            const labelMap = {
+              "feature/": "feature",
+              "fix/":     "bug",
+              "chore/":   "chore",
+              "docs/":    "documentation",
+              "hotfix/":  "hotfix",
+            };
+
+            let label = null;
+            for (const [prefix, name] of Object.entries(labelMap)) {
+              if (branch.startsWith(prefix)) {
+                label = name;
+                break;
+              }
+            }
+
+            if (!label) {
+              core.warning(`Branch "${branch}" does not match any known prefix. No label applied.`);
+              return;
+            }
+
+            // Ensure the label exists (create if missing)
+            const labelColors = {
+              feature:       "0075ca",
+              bug:           "d73a4a",
+              chore:         "e4e669",
+              documentation: "0075ca",
+              hotfix:        "b60205",
+            };
+
+            try {
+              await github.rest.issues.getLabel({
+                owner: context.repo.owner,
+                repo:  context.repo.repo,
+                name:  label,
+              });
+            } catch (e) {
+              if (e.status === 404) {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo:  context.repo.repo,
+                  name:  label,
+                  color: labelColors[label] ?? "ededed",
+                });
+              }
+            }
+
+            await github.rest.issues.addLabels({
+              owner:        context.repo.owner,
+              repo:         context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              labels:       [label],
+            });
+
+            core.info(`Applied label "${label}" to PR #${context.payload.pull_request.number}`);

@@ -1,0 +1,72 @@
+name: Reporte de bug
+description: Reportar un comportamiento incorrecto o inesperado
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por reportar el bug. Completá todos los campos para agilizar la resolución.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descripción
+      description: Descripción clara y concisa del problema.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Pasos para reproducir
+      description: Pasos mínimos para reproducir el bug.
+      placeholder: |
+        1. Ir a '...'
+        2. Hacer clic en '...'
+        3. Ver error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamiento esperado
+      description: Qué debería haber ocurrido.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportamiento actual
+      description: Qué ocurre en realidad.
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Capturas de pantalla o logs
+      description: Si aplica, agregar capturas o mensajes de error de la consola.
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Ambiente
+      options:
+        - Producción
+        - Desarrollo (local)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Navegador
+      options:
+        - Chrome / Chromium
+        - Firefox
+        - Safari
+        - Edge
+        - Aplicación PWA instalada
+        - Otro

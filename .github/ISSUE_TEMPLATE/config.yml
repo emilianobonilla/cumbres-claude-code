@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentación del proyecto
+    url: https://github.com/emilianobilli/cumbres/tree/main/docs
+    about: Consultá la documentación antes de abrir un issue.
